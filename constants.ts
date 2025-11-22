@@ -1,4 +1,5 @@
 
+
 import { Product, Order, LandingPageSettings, PaymentSettings, SMTPSettings } from './types';
 
 export const HERO_PRODUCT: Product = {
@@ -146,7 +147,8 @@ export const DEFAULT_SETTINGS: LandingPageSettings = {
         highlight: false, 
         tag: 'HARDWARE', 
         btnText: 'Buy Starter Kit', 
-        features: ['Modem Unit', '5G/4G SIM Card', '50GB Bonus Data', 'Free Delivery'] 
+        features: ['Modem Unit', '5G/4G SIM Card', '50GB Bonus Data', 'Free Delivery'],
+        productId: 'dito-wowfi-pro'
       },
       { 
         name: 'Unlimited 5G', 
@@ -155,7 +157,8 @@ export const DEFAULT_SETTINGS: LandingPageSettings = {
         highlight: true, 
         tag: 'BEST VALUE', 
         btnText: 'Get Unlimited', 
-        features: ['Unlimited 5G Data', 'No Speed Throttling', 'Valid for 30 Days', 'Works with DITO Modem'] 
+        features: ['Unlimited 5G Data', 'No Speed Throttling', 'Valid for 30 Days', 'Works with DITO Modem'],
+        productId: ''
       },
       { 
         name: 'Data Top-ups', 
@@ -164,7 +167,8 @@ export const DEFAULT_SETTINGS: LandingPageSettings = {
         highlight: false, 
         tag: 'ADD-ONS', 
         btnText: 'View Options', 
-        features: ['Various Data Buckets', 'Valid for 3-30 Days', 'Easy Reload via App', 'Shareable Data'] 
+        features: ['Various Data Buckets', 'Valid for 3-30 Days', 'Easy Reload via App', 'Shareable Data'],
+        productId: 'dito-sim-starter'
       }
     ]
   },

@@ -1,4 +1,6 @@
 
+
+
 import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -258,15 +260,29 @@ const HomePage: React.FC = () => {
                           </li>
                        ))}
                     </ul>
-
-                    <Button 
-                       onClick={handleShopNow} 
-                       variant={plan.highlight ? 'primary' : 'outline'} 
-                       fullWidth 
-                       className={plan.highlight ? 'shadow-lg shadow-red-500/20' : 'group-hover:bg-gray-900 group-hover:text-white group-hover:border-gray-900'}
-                    >
-                       {plan.btnText}
-                    </Button>
+                    
+                    {/* Dynamic Link Logic */}
+                    {plan.productId ? (
+                      <Link to={`/product/${plan.productId}`} className="w-full">
+                         <Button 
+                           variant={plan.highlight ? 'primary' : 'outline'} 
+                           fullWidth 
+                           className={plan.highlight ? 'shadow-lg shadow-red-500/20' : 'group-hover:bg-gray-900 group-hover:text-white group-hover:border-gray-900'}
+                        >
+                           {plan.btnText}
+                        </Button>
+                      </Link>
+                    ) : (
+                       <Button 
+                          onClick={handleShopNow} 
+                          variant={plan.highlight ? 'primary' : 'outline'} 
+                          fullWidth 
+                          className={plan.highlight ? 'shadow-lg shadow-red-500/20' : 'group-hover:bg-gray-900 group-hover:text-white group-hover:border-gray-900'}
+                       >
+                          {plan.btnText}
+                       </Button>
+                    )}
+                    
                   </div>
                ))}
             </div>

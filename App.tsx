@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { HashRouter as Router, Switch, Route, useLocation } from 'react-router-dom';
 import { CartItem, Product } from './types';
 import { Navbar, Footer, CartDrawer } from './components/Layout';
 import AIChatBot from './components/AIChatBot';
@@ -76,46 +76,46 @@ const AppContent: React.FC = () => {
           <ScrollToTop />
           <ReferralHandler />
           <div className="min-h-screen flex flex-col font-sans text-gray-900">
-            <Routes>
+            <Switch>
               {/* Admin Route */}
-              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin" component={AdminDashboard} />
               
               {/* Affiliate Routes */}
-              <Route path="/affiliate/login" element={<AffiliateLoginPage />} />
-              <Route path="/affiliate/dashboard" element={
+              <Route path="/affiliate/login" component={AffiliateLoginPage} />
+              <Route path="/affiliate/dashboard" render={() => (
                 <>
                   <Navbar />
                   <AffiliateDashboard />
                 </>
-              } />
+              )} />
 
               {/* Customer Route */}
-              <Route path="/customer/login" element={<CustomerLoginPage />} />
-              <Route path="/customer/dashboard" element={
+              <Route path="/customer/login" component={CustomerLoginPage} />
+              <Route path="/customer/dashboard" render={() => (
                 <>
                   <Navbar />
                   <CustomerDashboard />
                 </>
-              } />
+              )} />
 
               {/* Public Routes */}
-              <Route path="*" element={
+              <Route path="/" render={() => (
                 <>
                   <Navbar />
                   <main className="flex-grow">
-                    <Routes>
-                      <Route path="/" element={<HomePage />} />
-                      <Route path="/catalog" element={<CatalogPage />} />
-                      <Route path="/product/:id" element={<ProductDetailPage />} />
-                      <Route path="/checkout" element={<CheckoutPage />} />
-                    </Routes>
+                    <Switch>
+                      <Route exact path="/" component={HomePage} />
+                      <Route path="/catalog" component={CatalogPage} />
+                      <Route path="/product/:id" component={ProductDetailPage} />
+                      <Route path="/checkout" component={CheckoutPage} />
+                    </Switch>
                   </main>
                   <Footer />
                   <CartDrawer />
                   <AIChatBot />
                 </>
-              } />
-            </Routes>
+              )} />
+            </Switch>
           </div>
         </Router>
       </CartProvider>

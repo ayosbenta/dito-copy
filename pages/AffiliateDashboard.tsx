@@ -1,12 +1,12 @@
 
 import React, { useContext, useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { StoreContext } from '../contexts/StoreContext';
 import { Copy, DollarSign, ShoppingBag, ExternalLink, CheckCircle, Wallet, Clock, XCircle, CreditCard, LayoutDashboard, MousePointer, CheckCircle2, LogOut, User, Settings, ChevronDown, Lock, Save } from 'lucide-react';
 import { Button, Badge } from '../components/UI';
 
 const AffiliateDashboard: React.FC = () => {
-  const navigate = useNavigate();
+  const history = useHistory();
   const { affiliates, orders, payouts, requestPayout, updateAffiliate, isSyncing } = useContext(StoreContext);
   const [activeTab, setActiveTab] = useState<'dashboard' | 'payouts'>('dashboard');
   
@@ -61,7 +61,7 @@ const AffiliateDashboard: React.FC = () => {
   // Handlers
   const handleLogout = () => {
     localStorage.removeItem('dito_affiliate_id');
-    navigate('/affiliate/login');
+    history.push('/affiliate/login');
   };
 
   const openProfile = () => {

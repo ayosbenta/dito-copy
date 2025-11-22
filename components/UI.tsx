@@ -1,6 +1,5 @@
-
 import React, { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ShoppingCart, Eye } from 'lucide-react';
 import { Product } from '../types';
 import { CartContext } from '../contexts/CartContext';
@@ -8,13 +7,19 @@ import { CartContext } from '../contexts/CartContext';
 export const Button: React.FC<{
   children: React.ReactNode;
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
   className?: string;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   disabled?: boolean;
   fullWidth?: boolean;
-}> = ({ children, variant = 'primary', className = '', onClick, disabled, fullWidth }) => {
-  const baseStyles = "px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed tracking-wide";
+}> = ({ children, variant = 'primary', size = 'md', className = '', onClick, disabled, fullWidth }) => {
+  // Base styles stripped of padding to allow size overrides
+  const baseStyles = "rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed tracking-wide";
   
+  let sizeClasses = "px-6 py-3";
+  if (size === 'sm') sizeClasses = "px-3 py-1.5 text-sm";
+  if (size === 'lg') sizeClasses = "px-8 py-4 text-lg";
+
   const variants = {
     primary: "bg-primary text-white hover:bg-secondary shadow-lg shadow-red-900/10",
     secondary: "bg-gray-900 text-white hover:bg-gray-800",
@@ -24,7 +29,7 @@ export const Button: React.FC<{
 
   return (
     <button 
-      className={`${baseStyles} ${variants[variant]} ${fullWidth ? 'w-full' : ''} ${className}`}
+      className={`${baseStyles} ${sizeClasses} ${variants[variant]} ${fullWidth ? 'w-full' : ''} ${className}`}
       onClick={onClick}
       disabled={disabled}
     >
@@ -35,8 +40,7 @@ export const Button: React.FC<{
 
 export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   const { addToCart, setIsCartOpen } = useContext(CartContext);
-  const navigate = useNavigate();
-
+  
   // Stock Logic
   const stock = product.stock ?? 0;
   const isOutOfStock = stock === 0;
@@ -92,14 +96,15 @@ export const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
         <div className="grid grid-cols-2 gap-2">
           <Button 
             variant="primary" 
-            className="py-2 text-sm px-2" 
+            size="sm"
+            className="px-2" 
             onClick={handleBuyNow}
             disabled={isOutOfStock}
           >
             {isOutOfStock ? 'No Stock' : 'Buy Now'}
           </Button>
           <Link to={`/product/${product.id}`} className="w-full">
-             <Button variant="outline" fullWidth className="py-2 text-sm px-2">
+             <Button variant="outline" fullWidth size="sm" className="px-2">
                Details
              </Button>
           </Link>

@@ -1,6 +1,6 @@
 
 import React, { useContext, useEffect, useState, useRef } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useHistory } from 'react-router-dom';
 import { ShoppingCart, Menu, X, Wifi, Facebook, Twitter, Instagram, Trash2, Plus, Minus, ArrowRight, Lock, User, Shield, Users, LogIn, Tag, AlertTriangle, ChevronDown, LogOut, Package } from 'lucide-react';
 import { CartContext } from '../contexts/CartContext';
 import { StoreContext } from '../contexts/StoreContext';
@@ -19,7 +19,7 @@ export const Navbar: React.FC = () => {
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   const location = useLocation();
-  const navigate = useNavigate();
+  const history = useHistory();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
@@ -56,7 +56,7 @@ export const Navbar: React.FC = () => {
     localStorage.removeItem('dito_customer_user');
     setCustomerUser(null);
     setIsUserDropdownOpen(false);
-    navigate('/');
+    history.push('/');
   };
 
   const navLinks = [

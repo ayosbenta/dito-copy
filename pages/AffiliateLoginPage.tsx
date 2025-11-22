@@ -1,6 +1,6 @@
 
 import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { StoreContext } from '../contexts/StoreContext';
 import { Affiliate } from '../types';
 import { Button } from '../components/UI';
@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 
 const AffiliateLoginPage: React.FC = () => {
-  const navigate = useNavigate();
+  const history = useHistory();
   const { affiliates, registerAffiliate, isSyncing } = useContext(StoreContext);
   
   const [isRegistering, setIsRegistering] = useState(false);
@@ -137,7 +137,7 @@ const AffiliateLoginPage: React.FC = () => {
       }
       
       localStorage.setItem('dito_affiliate_id', affiliate.id);
-      navigate('/affiliate/dashboard');
+      history.push('/affiliate/dashboard');
     } else {
       setLoginError('Account not found. Please check your username.');
     }
@@ -177,7 +177,7 @@ const AffiliateLoginPage: React.FC = () => {
     registerAffiliate(newAffiliate);
     localStorage.setItem('dito_affiliate_id', newAffiliate.id);
     // Small delay to allow sync start
-    setTimeout(() => navigate('/affiliate/dashboard'), 1000);
+    setTimeout(() => history.push('/affiliate/dashboard'), 1000);
   };
 
   return (
@@ -486,86 +486,4 @@ const AffiliateLoginPage: React.FC = () => {
                            <p className="text-xs text-gray-400 mt-1">PNG, JPG (Max 5MB)</p>
                            <input 
                              type="file" 
-                             accept="image/*" 
-                             onChange={handleFileChange}
-                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                           />
-                         </>
-                       )}
-                    </div>
-                    {errors.govtId && <span className="form-error block mt-2 text-center">{errors.govtId}</span>}
-                  </div>
-                </div>
-
-                {/* Actions */}
-                <div className="pt-4">
-                   <Button fullWidth className="py-4 text-lg shadow-lg shadow-red-900/10" disabled={isSyncing}>
-                     {isSyncing ? <Loader2 className="animate-spin" /> : 'Create Affiliate Account'}
-                   </Button>
-                </div>
-
-              </form>
-            )}
-
-            {/* Toggle Login/Register */}
-            <div className="mt-8 pt-6 border-t border-gray-100 text-center">
-               <p className="text-sm text-gray-500 mb-4">
-                 {isRegistering ? 'Already have an account?' : 'Don\'t have an account yet?'}
-               </p>
-               <button 
-                 onClick={() => { 
-                   setIsRegistering(!isRegistering); 
-                   setLoginError(''); 
-                   setErrors({}); 
-                   window.scrollTo(0,0); 
-                 }}
-                 className="text-primary font-bold hover:text-secondary transition-colors flex items-center justify-center gap-2 mx-auto"
-               >
-                 {isRegistering ? 'Login to existing account' : 'Register as a new partner'} <ArrowRight size={16} />
-               </button>
-            </div>
-
-            <div className="mt-6 text-center">
-               <button onClick={() => navigate('/')} className="text-xs text-gray-400 hover:text-gray-600">
-                 ← Back to DITO Home Store
-               </button>
-            </div>
-          </div>
-       </div>
-
-       <style>{`
-         .form-label {
-           display: block;
-           font-size: 0.75rem;
-           font-weight: 700;
-           text-transform: uppercase;
-           color: #6b7280;
-           margin-bottom: 0.25rem;
-           margin-left: 0.25rem;
-         }
-         .form-input {
-           width: 100%;
-           padding: 0.75rem 1rem;
-           border-radius: 0.75rem;
-           border: 1px solid #e5e7eb;
-           outline: none;
-           transition: all 0.2s;
-           font-size: 0.875rem;
-         }
-         .form-input:focus {
-           border-color: #C8102E;
-           box-shadow: 0 0 0 2px rgba(200, 16, 46, 0.1);
-         }
-         .form-error {
-           font-size: 0.75rem;
-           color: #ef4444;
-           margin-top: 0.25rem;
-           margin-left: 0.25rem;
-           display: block;
-         }
-       `}</style>
-    </div>
-  );
-};
-
-export default AffiliateLoginPage;
+                             accept="image/*"

@@ -1,4 +1,5 @@
 
+
 export interface Product {
   id: string;
   name: string;
@@ -174,6 +175,7 @@ export interface PricingItem {
   btnText: string;
   highlight: boolean;
   tag?: string;
+  productId?: string; // ID of the product to link to
 }
 
 export interface FAQItem {

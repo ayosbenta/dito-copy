@@ -1,4 +1,7 @@
 
+
+
+
 import React, { useState, useContext, useEffect } from 'react';
 import { 
   LayoutDashboard, Package, ShoppingBag, Users, Settings, 
@@ -601,7 +604,7 @@ const AdminDashboard: React.FC = () => {
                                </div>
                                <div>
                                   <p className="text-sm font-bold text-gray-900 line-clamp-1">{order.customer}</p>
-                                  <p className="text-[10px] text-gray-400">{new Date(order.date).toLocaleDateString()}</p>
+                                  <p className="text-xs text-gray-400">{new Date(order.date).toLocaleDateString()}</p>
                                </div>
                             </div>
                             <div className="text-right">
@@ -624,7 +627,7 @@ const AdminDashboard: React.FC = () => {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
              <div className="p-6 border-b border-gray-100 flex justify-between items-center">
                 <h2 className="font-bold text-gray-900">Product Catalog</h2>
-                <Button onClick={handleNewProduct} className="py-2 text-sm"><Plus size={16}/> Add Product</Button>
+                <Button onClick={handleNewProduct} className="py-2" size="sm"><Plus size={16}/> Add Product</Button>
              </div>
              <div className="overflow-x-auto">
                 <table className="w-full text-sm text-left">
@@ -677,7 +680,7 @@ const AdminDashboard: React.FC = () => {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
              <div className="p-6 border-b border-gray-100 flex justify-between items-center">
                 <h2 className="font-bold text-gray-900">Inventory Management</h2>
-                <Button onClick={forceInventorySync} disabled={isSyncing} variant="outline" className="py-2 text-sm flex items-center gap-2">
+                <Button onClick={forceInventorySync} disabled={isSyncing} variant="outline" size="sm" className="py-2 flex items-center gap-2">
                   <RefreshCw size={16} className={isSyncing ? 'animate-spin' : ''}/> Sync Sheet
                 </Button>
              </div>
@@ -912,7 +915,7 @@ const AdminDashboard: React.FC = () => {
 
                             <div className="text-right">
                                <p className="font-bold text-primary text-sm">₱{aff.totalSales.toLocaleString()}</p>
-                               <p className="text-[10px] text-gray-400">Sales</p>
+                               <p className="text-xs text-gray-400">Sales</p>
                             </div>
                          </div>
                       ))}
@@ -994,7 +997,7 @@ const AdminDashboard: React.FC = () => {
                                {c.username && <div className="text-xs text-gray-400">@{c.username}</div>}
                             </td>
                             <td className="p-4 text-gray-600">{c.email}</td>
-                            <td className="p-4 text-gray-600">{c.phone || c.mobile}</td>
+                            <td className="p-4 text-gray-600">{c.mobile}</td>
                             <td className="p-4 text-gray-500">{c.joinDate ? new Date(c.joinDate).toLocaleDateString() : 'N/A'}</td>
                             <td className="p-4 text-right">
                                <div className="flex justify-end gap-2">
@@ -1020,7 +1023,7 @@ const AdminDashboard: React.FC = () => {
              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="p-6 border-b border-gray-100 flex justify-between items-center">
                    <h2 className="text-lg font-bold text-gray-900">Landing Page Configuration</h2>
-                   <Button onClick={saveSettings} disabled={isSyncing} className="flex items-center gap-2"><Save size={16} /> {isSyncing ? 'Saving...' : 'Save Changes'}</Button>
+                   <Button onClick={saveSettings} disabled={isSyncing} className="flex items-center gap-2" size="sm"><Save size={16} /> {isSyncing ? 'Saving...' : 'Save Changes'}</Button>
                 </div>
                 
                 {/* Navigation Subtabs */}
@@ -1157,7 +1160,7 @@ const AdminDashboard: React.FC = () => {
                          <div className="border-t pt-4">
                             <div className="flex justify-between items-center mb-4">
                                <h3 className="font-bold text-gray-900">Pricing Cards</h3>
-                               <Button size="sm" onClick={() => addSettingsItem('pricing', { name: 'Plan', price: '999', features: [], btnText: 'Buy' })}>Add Card</Button>
+                               <Button size="sm" onClick={() => addSettingsItem('pricing', { name: 'Plan', price: '999', features: [], btnText: 'Buy', productId: '' })}>Add Card</Button>
                             </div>
                             <div className="space-y-4">
                                {settingsForm.pricing.list.map((item, idx) => (
@@ -1168,6 +1171,19 @@ const AdminDashboard: React.FC = () => {
                                         <div><label className="text-[10px] font-bold text-gray-400 uppercase">Price</label><input className="w-full border rounded p-1.5 text-sm" value={item.price} onChange={e => updateSettingsItem('pricing', idx, 'price', e.target.value)} /></div>
                                         <div><label className="text-[10px] font-bold text-gray-400 uppercase">Period (e.g. /mo)</label><input className="w-full border rounded p-1.5 text-sm" value={item.period || ''} onChange={e => updateSettingsItem('pricing', idx, 'period', e.target.value)} /></div>
                                         <div><label className="text-[10px] font-bold text-gray-400 uppercase">CTA Text</label><input className="w-full border rounded p-1.5 text-sm" value={item.btnText} onChange={e => updateSettingsItem('pricing', idx, 'btnText', e.target.value)} /></div>
+                                     </div>
+                                     <div className="mt-2">
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase">Link to Product</label>
+                                        <select
+                                          className="w-full border rounded p-1.5 text-sm bg-white"
+                                          value={item.productId || ''}
+                                          onChange={e => updateSettingsItem('pricing', idx, 'productId', e.target.value)}
+                                        >
+                                          <option value="">-- Select Product (Default) --</option>
+                                          {products.map(p => (
+                                            <option key={p.id} value={p.id}>{p.name} (₱{p.price})</option>
+                                          ))}
+                                        </select>
                                      </div>
                                      <div className="mt-2">
                                         <label className="text-[10px] font-bold text-gray-400 uppercase">Features (Comma Separated)</label>
@@ -1233,7 +1249,7 @@ const AdminDashboard: React.FC = () => {
                        <h2 className="text-lg font-bold text-gray-900">Payment Methods</h2>
                        <p className="text-gray-500 text-sm">Configure accepted payment options.</p>
                     </div>
-                    <Button onClick={savePaymentSettings} disabled={isSyncing} className="flex items-center gap-2"><Save size={16} /> Save</Button>
+                    <Button onClick={savePaymentSettings} disabled={isSyncing} className="flex items-center gap-2" size="sm"><Save size={16} /> Save</Button>
                  </div>
                  <div className="p-6 space-y-6">
                     {/* COD */}
@@ -1337,7 +1353,7 @@ const AdminDashboard: React.FC = () => {
                       <h2 className="text-lg font-bold text-gray-900">SMTP Email Setup</h2>
                       <p className="text-gray-500 text-sm">Configure settings for sending system emails.</p>
                    </div>
-                   <Button onClick={saveSmtpSettings} disabled={isSyncing} className="flex items-center gap-2">
+                   <Button onClick={saveSmtpSettings} disabled={isSyncing} className="flex items-center gap-2" size="sm">
                       <Save size={16} /> {isSyncing ? 'Saving...' : 'Save Configuration'}
                    </Button>
                 </div>
@@ -1538,7 +1554,7 @@ const AdminDashboard: React.FC = () => {
                       </div>
                       <div className="flex justify-between border-b border-gray-100 pb-2">
                          <span className="text-gray-500">Mobile</span>
-                         <span className="font-medium">{viewingCustomer.mobile || viewingCustomer.phone}</span>
+                         <span className="font-medium">{viewingCustomer.mobile}</span>
                       </div>
                       <div className="flex justify-between border-b border-gray-100 pb-2">
                          <span className="text-gray-500">Join Date</span>
