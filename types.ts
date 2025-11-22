@@ -143,6 +143,44 @@ export interface ShippingSettings {
   couriers: Courier[];
 }
 
+// --- Landing Page Content Interfaces ---
+
+export interface FeatureItem {
+  icon: string; // Icon name (e.g., "Zap") or Image URL
+  title: string;
+  desc: string;
+}
+
+export interface StepItem {
+  step: string;
+  title: string;
+  desc: string;
+  icon: string;
+}
+
+export interface TestimonialItem {
+  name: string;
+  location: string;
+  quote: string;
+  image?: string;
+}
+
+export interface PricingItem {
+  name: string;
+  price: string;
+  period?: string;
+  description?: string; // For top-ups
+  features: string[]; // Comma separated in UI
+  btnText: string;
+  highlight: boolean;
+  tag?: string;
+}
+
+export interface FAQItem {
+  q: string;
+  a: string;
+}
+
 export interface LandingPageSettings {
   hero: {
     titlePrefix: string;
@@ -156,15 +194,32 @@ export interface LandingPageSettings {
   features: {
     title: string;
     subtitle: string;
+    list: FeatureItem[];
+  };
+  howItWorks: {
+    title: string;
+    list: StepItem[];
   };
   testimonials: {
     title: string;
     subtitle: string;
+    list: TestimonialItem[];
+  };
+  pricing: {
+    title: string;
+    subtitle: string;
+    list: PricingItem[];
+  };
+  faqs: {
+    title: string;
+    subtitle: string;
+    list: FAQItem[];
   };
   cta: {
     title: string;
     subtitle: string;
     btnText: string;
+    image?: string;
   };
   shipping: ShippingSettings;
 }

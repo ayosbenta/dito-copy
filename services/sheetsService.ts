@@ -218,8 +218,9 @@ export const SheetsService = {
           let val = row.Value;
           if (val === 'true') val = true;
           if (val === 'false') val = false;
+          // Handle JSON arrays stored as strings
           if (typeof val === 'string' && (val.startsWith('[') || val.startsWith('{'))) {
-             try { val = JSON.parse(val); } catch (e) { /* keep as string */ }
+             try { val = JSON.parse(val); } catch (e) { /* keep as string if parse fails */ }
           }
           if (!isNaN(Number(val)) && val !== '' && typeof val === 'string' && !val.startsWith('0')) {
              val = Number(val);
@@ -232,7 +233,15 @@ export const SheetsService = {
       const smtp = rawSettings.smtp || DEFAULT_SMTP_SETTINGS;
       if (!smtp.templates) smtp.templates = DEFAULT_SMTP_SETTINGS.templates;
       const { payment: _, smtp: __, ...landingSettings } = rawSettings;
+      
+      // Ensure specific sections exist if they were missing from sheet
       if (!landingSettings.shipping) landingSettings.shipping = DEFAULT_SETTINGS.shipping;
+      if (!landingSettings.features) landingSettings.features = DEFAULT_SETTINGS.features;
+      if (!landingSettings.howItWorks) landingSettings.howItWorks = DEFAULT_SETTINGS.howItWorks;
+      if (!landingSettings.pricing) landingSettings.pricing = DEFAULT_SETTINGS.pricing;
+      if (!landingSettings.testimonials) landingSettings.testimonials = DEFAULT_SETTINGS.testimonials;
+      if (!landingSettings.faqs) landingSettings.faqs = DEFAULT_SETTINGS.faqs;
+      if (!landingSettings.cta) landingSettings.cta = DEFAULT_SETTINGS.cta;
 
       return { 
         products, orders, customers, affiliates, payouts,
@@ -264,10 +273,28 @@ export const SheetsService = {
 
   saveSettings: async (settings: any): Promise<ApiResponse> => {
       const processedSettings = JSON.parse(JSON.stringify(settings));
+      
+      // Stringify complex arrays before sending to allow them to be stored in the Value column
       if (processedSettings.shipping) {
           if (processedSettings.shipping.zones) processedSettings.shipping.zones = JSON.stringify(processedSettings.shipping.zones);
           if (processedSettings.shipping.couriers) processedSettings.shipping.couriers = JSON.stringify(processedSettings.shipping.couriers);
       }
+      if (processedSettings.features && processedSettings.features.list) {
+          processedSettings.features.list = JSON.stringify(processedSettings.features.list);
+      }
+      if (processedSettings.howItWorks && processedSettings.howItWorks.list) {
+          processedSettings.howItWorks.list = JSON.stringify(processedSettings.howItWorks.list);
+      }
+      if (processedSettings.pricing && processedSettings.pricing.list) {
+          processedSettings.pricing.list = JSON.stringify(processedSettings.pricing.list);
+      }
+      if (processedSettings.testimonials && processedSettings.testimonials.list) {
+          processedSettings.testimonials.list = JSON.stringify(processedSettings.testimonials.list);
+      }
+      if (processedSettings.faqs && processedSettings.faqs.list) {
+          processedSettings.faqs.list = JSON.stringify(processedSettings.faqs.list);
+      }
+
       return SheetsService.sendData('SAVE_SETTINGS', processedSettings);
   },
 

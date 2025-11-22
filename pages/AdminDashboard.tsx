@@ -5,7 +5,7 @@ import {
   TrendingUp, AlertCircle, Search, Bell, Cloud,
   MoreHorizontal, ArrowUpRight, ArrowDownRight, Filter, LogOut, Menu, X, Plus, Trash2, Edit2, Save, Loader2, Briefcase, Ban, CheckCircle, RotateCcw, CreditCard, ExternalLink, Image as ImageIcon, DollarSign, XCircle, RefreshCw,
   Clock, MousePointer, Lock, Shield, Printer, Boxes, AlertTriangle, Percent, FileSpreadsheet, List, AlignLeft, Box, Coins,
-  ChevronDown, Check, Truck, Smartphone, Landmark, Map, MapPin, Mail, User as UserIcon, FileText, MessageSquare, Eye, Globe, Trophy
+  ChevronDown, Check, Truck, Smartphone, Landmark, Map, MapPin, Mail, User as UserIcon, FileText, MessageSquare, Eye, Globe, Trophy, HelpCircle
 } from 'lucide-react';
 import { SALES_DATA } from '../constants';
 import { 
@@ -69,6 +69,7 @@ const AdminDashboard: React.FC = () => {
   // --- Sub-Tabs ---
   const [activeSMTPTab, setActiveSMTPTab] = useState<'server' | 'templates'>('server');
   const [activeShippingTab, setActiveShippingTab] = useState<'general' | 'couriers' | 'zones'>('general');
+  const [activeSettingsTab, setActiveSettingsTab] = useState<'Hero' | 'Features' | 'HowItWorks' | 'Testimonials' | 'Pricing' | 'FAQ' | 'CTA'>('Hero');
   const [newCourierName, setNewCourierName] = useState('');
   const [newCourierUrl, setNewCourierUrl] = useState('');
 
@@ -187,14 +188,47 @@ const AdminDashboard: React.FC = () => {
         setIsAffiliateModalOpen(false); 
     }
   };
-  const toggleAffiliateStatus = (id: string, status: string) => {
-      updateAffiliate(id, { status: status === 'active' ? 'banned' : 'active' } as any);
-  };
 
   // --- Settings Logic ---
-  const handleSettingsChange = (section: any, key: any, value: any) => {
-      setSettingsForm(prev => ({ ...prev, [section]: { ...prev[section as keyof LandingPageSettings], [key]: value } }));
+  const handleSettingsChange = (section: keyof LandingPageSettings, key: string, value: any) => {
+      setSettingsForm(prev => ({ 
+        ...prev, 
+        [section]: { ...prev[section] as any, [key]: value } 
+      }));
   };
+  
+  // Dynamic List Helpers for Settings
+  const addSettingsItem = (section: keyof LandingPageSettings, emptyItem: any) => {
+    setSettingsForm(prev => ({
+       ...prev,
+       [section]: {
+         ...prev[section] as any,
+         list: [...(prev[section] as any).list, emptyItem]
+       }
+    }));
+  };
+
+  const removeSettingsItem = (section: keyof LandingPageSettings, index: number) => {
+    setSettingsForm(prev => ({
+       ...prev,
+       [section]: {
+         ...prev[section] as any,
+         list: (prev[section] as any).list.filter((_: any, i: number) => i !== index)
+       }
+    }));
+  };
+
+  const updateSettingsItem = (section: keyof LandingPageSettings, index: number, field: string, value: any) => {
+     setSettingsForm(prev => {
+        const newList = [...(prev[section] as any).list];
+        newList[index] = { ...newList[index], [field]: value };
+        return {
+           ...prev,
+           [section]: { ...prev[section] as any, list: newList }
+        };
+     });
+  };
+
   const handlePaymentSettingsChange = (method: any, key: any, value: any) => {
       setPaymentSettingsForm(prev => ({ ...prev, [method]: { ...prev[method as keyof PaymentSettings], [key]: value } }));
   };
@@ -982,23 +1016,210 @@ const AdminDashboard: React.FC = () => {
 
       case 'Settings': 
         return (
-          <div className="max-w-4xl mx-auto space-y-8 pb-20">
+          <div className="max-w-6xl mx-auto space-y-8 pb-20">
              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="p-6 border-b border-gray-100 flex justify-between items-center">
                    <h2 className="text-lg font-bold text-gray-900">Landing Page Configuration</h2>
                    <Button onClick={saveSettings} disabled={isSyncing} className="flex items-center gap-2"><Save size={16} /> {isSyncing ? 'Saving...' : 'Save Changes'}</Button>
                 </div>
-                <div className="p-6 space-y-6">
-                   <div className="p-4 border rounded-xl bg-gray-50">
-                      <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2"><LayoutDashboard size={18}/> Hero Section</h3>
-                      <div className="grid md:grid-cols-3 gap-4 mb-4">
-                         <div><label className="text-xs font-bold text-gray-500 uppercase">Prefix</label><input className="w-full border rounded-lg p-2 mt-1" value={settingsForm.hero.titlePrefix} onChange={e => handleSettingsChange('hero', 'titlePrefix', e.target.value)} /></div>
-                         <div><label className="text-xs font-bold text-gray-500 uppercase">Highlight</label><input className="w-full border rounded-lg p-2 mt-1 text-primary font-bold" value={settingsForm.hero.titleHighlight} onChange={e => handleSettingsChange('hero', 'titleHighlight', e.target.value)} /></div>
-                         <div><label className="text-xs font-bold text-gray-500 uppercase">Suffix</label><input className="w-full border rounded-lg p-2 mt-1" value={settingsForm.hero.titleSuffix} onChange={e => handleSettingsChange('hero', 'titleSuffix', e.target.value)} /></div>
+                
+                {/* Navigation Subtabs */}
+                <div className="flex overflow-x-auto border-b bg-gray-50 px-6">
+                   {['Hero', 'Features', 'HowItWorks', 'Testimonials', 'Pricing', 'FAQ', 'CTA'].map(tab => (
+                      <button 
+                        key={tab} 
+                        onClick={() => setActiveSettingsTab(tab as any)} 
+                        className={`px-4 py-3 text-sm font-bold whitespace-nowrap border-b-2 transition-colors ${
+                           activeSettingsTab === tab ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-gray-700'
+                        }`}
+                      >
+                         {tab.replace(/([A-Z])/g, ' $1').trim()}
+                      </button>
+                   ))}
+                </div>
+
+                <div className="p-6">
+                   {activeSettingsTab === 'Hero' && (
+                      <div className="space-y-4 max-w-2xl">
+                         <h3 className="font-bold text-gray-900 border-b pb-2">Hero Header</h3>
+                         <div className="grid md:grid-cols-3 gap-4">
+                            <div><label className="text-xs font-bold text-gray-500 uppercase">Prefix</label><input className="w-full border rounded-lg p-2 mt-1" value={settingsForm.hero.titlePrefix} onChange={e => handleSettingsChange('hero', 'titlePrefix', e.target.value)} /></div>
+                            <div><label className="text-xs font-bold text-gray-500 uppercase">Highlight</label><input className="w-full border rounded-lg p-2 mt-1 text-primary font-bold" value={settingsForm.hero.titleHighlight} onChange={e => handleSettingsChange('hero', 'titleHighlight', e.target.value)} /></div>
+                            <div><label className="text-xs font-bold text-gray-500 uppercase">Suffix</label><input className="w-full border rounded-lg p-2 mt-1" value={settingsForm.hero.titleSuffix} onChange={e => handleSettingsChange('hero', 'titleSuffix', e.target.value)} /></div>
+                         </div>
+                         <div><label className="text-xs font-bold text-gray-500 uppercase">Subtitle</label><textarea className="w-full border rounded-lg p-2 mt-1" rows={3} value={settingsForm.hero.subtitle} onChange={e => handleSettingsChange('hero', 'subtitle', e.target.value)} /></div>
+                         <div className="grid md:grid-cols-2 gap-4">
+                             <div><label className="text-xs font-bold text-gray-500 uppercase">Primary Button</label><input className="w-full border rounded-lg p-2 mt-1" value={settingsForm.hero.btnPrimary} onChange={e => handleSettingsChange('hero', 'btnPrimary', e.target.value)} /></div>
+                             <div><label className="text-xs font-bold text-gray-500 uppercase">Secondary Button</label><input className="w-full border rounded-lg p-2 mt-1" value={settingsForm.hero.btnSecondary} onChange={e => handleSettingsChange('hero', 'btnSecondary', e.target.value)} /></div>
+                         </div>
+                         <div><label className="text-xs font-bold text-gray-500 uppercase">Hero Image URL</label><input className="w-full border rounded-lg p-2 mt-1" value={settingsForm.hero.heroImage} onChange={e => handleSettingsChange('hero', 'heroImage', e.target.value)} /></div>
                       </div>
-                      <div className="mb-4"><label className="text-xs font-bold text-gray-500 uppercase">Subtitle</label><textarea className="w-full border rounded-lg p-2 mt-1" rows={2} value={settingsForm.hero.subtitle} onChange={e => handleSettingsChange('hero', 'subtitle', e.target.value)} /></div>
-                      <div><label className="text-xs font-bold text-gray-500 uppercase">Hero Image URL</label><input className="w-full border rounded-lg p-2 mt-1" value={settingsForm.hero.heroImage} onChange={e => handleSettingsChange('hero', 'heroImage', e.target.value)} /></div>
-                   </div>
+                   )}
+
+                   {activeSettingsTab === 'Features' && (
+                      <div className="space-y-6">
+                         <div className="max-w-xl">
+                            <label className="text-xs font-bold text-gray-500 uppercase">Section Title</label>
+                            <input className="w-full border rounded-lg p-2 mt-1 mb-2" value={settingsForm.features.title} onChange={e => handleSettingsChange('features', 'title', e.target.value)} />
+                            <label className="text-xs font-bold text-gray-500 uppercase">Subtitle</label>
+                            <input className="w-full border rounded-lg p-2 mt-1" value={settingsForm.features.subtitle} onChange={e => handleSettingsChange('features', 'subtitle', e.target.value)} />
+                         </div>
+                         <div className="border-t pt-4">
+                            <div className="flex justify-between items-center mb-4">
+                               <h3 className="font-bold text-gray-900">Feature Items</h3>
+                               <Button size="sm" onClick={() => addSettingsItem('features', { icon: 'Zap', title: 'New Feature', desc: 'Description' })}>Add Feature</Button>
+                            </div>
+                            <div className="grid md:grid-cols-2 gap-4">
+                               {settingsForm.features.list.map((item, idx) => (
+                                  <div key={idx} className="p-4 border rounded-xl bg-gray-50 relative group">
+                                     <button onClick={() => removeSettingsItem('features', idx)} className="absolute top-2 right-2 text-red-400 opacity-0 group-hover:opacity-100"><XCircle size={16}/></button>
+                                     <div className="grid gap-2">
+                                        <div><label className="text-[10px] font-bold text-gray-400 uppercase">Icon Name</label><input className="w-full border rounded p-1.5 text-sm" value={item.icon} onChange={e => updateSettingsItem('features', idx, 'icon', e.target.value)} /></div>
+                                        <div><label className="text-[10px] font-bold text-gray-400 uppercase">Title</label><input className="w-full border rounded p-1.5 text-sm font-bold" value={item.title} onChange={e => updateSettingsItem('features', idx, 'title', e.target.value)} /></div>
+                                        <div><label className="text-[10px] font-bold text-gray-400 uppercase">Description</label><textarea className="w-full border rounded p-1.5 text-sm" rows={2} value={item.desc} onChange={e => updateSettingsItem('features', idx, 'desc', e.target.value)} /></div>
+                                     </div>
+                                  </div>
+                               ))}
+                            </div>
+                         </div>
+                      </div>
+                   )}
+
+                   {activeSettingsTab === 'HowItWorks' && (
+                      <div className="space-y-6">
+                          <div className="max-w-xl">
+                            <label className="text-xs font-bold text-gray-500 uppercase">Section Title</label>
+                            <input className="w-full border rounded-lg p-2 mt-1" value={settingsForm.howItWorks.title} onChange={e => handleSettingsChange('howItWorks', 'title', e.target.value)} />
+                          </div>
+                          <div className="border-t pt-4">
+                            <div className="flex justify-between items-center mb-4">
+                               <h3 className="font-bold text-gray-900">Steps</h3>
+                               <Button size="sm" onClick={() => addSettingsItem('howItWorks', { step: '1', icon: 'Box', title: 'New Step', desc: 'Description' })}>Add Step</Button>
+                            </div>
+                            <div className="grid md:grid-cols-3 gap-4">
+                               {settingsForm.howItWorks.list.map((item, idx) => (
+                                  <div key={idx} className="p-4 border rounded-xl bg-gray-50 relative group">
+                                     <button onClick={() => removeSettingsItem('howItWorks', idx)} className="absolute top-2 right-2 text-red-400 opacity-0 group-hover:opacity-100"><XCircle size={16}/></button>
+                                     <div className="grid gap-2">
+                                        <div className="flex gap-2">
+                                            <div className="w-12"><label className="text-[10px] font-bold text-gray-400 uppercase">Step #</label><input className="w-full border rounded p-1.5 text-sm" value={item.step} onChange={e => updateSettingsItem('howItWorks', idx, 'step', e.target.value)} /></div>
+                                            <div className="flex-1"><label className="text-[10px] font-bold text-gray-400 uppercase">Icon</label><input className="w-full border rounded p-1.5 text-sm" value={item.icon} onChange={e => updateSettingsItem('howItWorks', idx, 'icon', e.target.value)} /></div>
+                                        </div>
+                                        <div><label className="text-[10px] font-bold text-gray-400 uppercase">Title</label><input className="w-full border rounded p-1.5 text-sm font-bold" value={item.title} onChange={e => updateSettingsItem('howItWorks', idx, 'title', e.target.value)} /></div>
+                                        <div><label className="text-[10px] font-bold text-gray-400 uppercase">Description</label><textarea className="w-full border rounded p-1.5 text-sm" rows={2} value={item.desc} onChange={e => updateSettingsItem('howItWorks', idx, 'desc', e.target.value)} /></div>
+                                     </div>
+                                  </div>
+                               ))}
+                            </div>
+                         </div>
+                      </div>
+                   )}
+
+                   {activeSettingsTab === 'Testimonials' && (
+                      <div className="space-y-6">
+                         <div className="max-w-xl">
+                            <label className="text-xs font-bold text-gray-500 uppercase">Section Title</label>
+                            <input className="w-full border rounded-lg p-2 mt-1 mb-2" value={settingsForm.testimonials.title} onChange={e => handleSettingsChange('testimonials', 'title', e.target.value)} />
+                            <label className="text-xs font-bold text-gray-500 uppercase">Subtitle</label>
+                            <input className="w-full border rounded-lg p-2 mt-1" value={settingsForm.testimonials.subtitle} onChange={e => handleSettingsChange('testimonials', 'subtitle', e.target.value)} />
+                         </div>
+                         <div className="border-t pt-4">
+                            <div className="flex justify-between items-center mb-4">
+                               <h3 className="font-bold text-gray-900">User Reviews</h3>
+                               <Button size="sm" onClick={() => addSettingsItem('testimonials', { name: 'Name', location: 'Manila', quote: 'Great service!' })}>Add Review</Button>
+                            </div>
+                            <div className="grid md:grid-cols-2 gap-4">
+                               {settingsForm.testimonials.list.map((item, idx) => (
+                                  <div key={idx} className="p-4 border rounded-xl bg-gray-50 relative group">
+                                     <button onClick={() => removeSettingsItem('testimonials', idx)} className="absolute top-2 right-2 text-red-400 opacity-0 group-hover:opacity-100"><XCircle size={16}/></button>
+                                     <div className="grid gap-2">
+                                        <div className="flex gap-2">
+                                           <div className="flex-1"><label className="text-[10px] font-bold text-gray-400 uppercase">Customer Name</label><input className="w-full border rounded p-1.5 text-sm" value={item.name} onChange={e => updateSettingsItem('testimonials', idx, 'name', e.target.value)} /></div>
+                                           <div className="flex-1"><label className="text-[10px] font-bold text-gray-400 uppercase">Location</label><input className="w-full border rounded p-1.5 text-sm" value={item.location} onChange={e => updateSettingsItem('testimonials', idx, 'location', e.target.value)} /></div>
+                                        </div>
+                                        <div><label className="text-[10px] font-bold text-gray-400 uppercase">Quote</label><textarea className="w-full border rounded p-1.5 text-sm" rows={2} value={item.quote} onChange={e => updateSettingsItem('testimonials', idx, 'quote', e.target.value)} /></div>
+                                     </div>
+                                  </div>
+                               ))}
+                            </div>
+                         </div>
+                      </div>
+                   )}
+
+                   {activeSettingsTab === 'Pricing' && (
+                      <div className="space-y-6">
+                         <div className="max-w-xl">
+                            <label className="text-xs font-bold text-gray-500 uppercase">Section Title</label>
+                            <input className="w-full border rounded-lg p-2 mt-1 mb-2" value={settingsForm.pricing.title} onChange={e => handleSettingsChange('pricing', 'title', e.target.value)} />
+                            <label className="text-xs font-bold text-gray-500 uppercase">Subtitle</label>
+                            <input className="w-full border rounded-lg p-2 mt-1" value={settingsForm.pricing.subtitle} onChange={e => handleSettingsChange('pricing', 'subtitle', e.target.value)} />
+                         </div>
+                         <div className="border-t pt-4">
+                            <div className="flex justify-between items-center mb-4">
+                               <h3 className="font-bold text-gray-900">Pricing Cards</h3>
+                               <Button size="sm" onClick={() => addSettingsItem('pricing', { name: 'Plan', price: '999', features: [], btnText: 'Buy' })}>Add Card</Button>
+                            </div>
+                            <div className="space-y-4">
+                               {settingsForm.pricing.list.map((item, idx) => (
+                                  <div key={idx} className="p-4 border rounded-xl bg-gray-50 relative group">
+                                     <button onClick={() => removeSettingsItem('pricing', idx)} className="absolute top-2 right-2 text-red-400 opacity-0 group-hover:opacity-100"><XCircle size={16}/></button>
+                                     <div className="grid md:grid-cols-4 gap-4">
+                                        <div><label className="text-[10px] font-bold text-gray-400 uppercase">Plan Name</label><input className="w-full border rounded p-1.5 text-sm font-bold" value={item.name} onChange={e => updateSettingsItem('pricing', idx, 'name', e.target.value)} /></div>
+                                        <div><label className="text-[10px] font-bold text-gray-400 uppercase">Price</label><input className="w-full border rounded p-1.5 text-sm" value={item.price} onChange={e => updateSettingsItem('pricing', idx, 'price', e.target.value)} /></div>
+                                        <div><label className="text-[10px] font-bold text-gray-400 uppercase">Period (e.g. /mo)</label><input className="w-full border rounded p-1.5 text-sm" value={item.period || ''} onChange={e => updateSettingsItem('pricing', idx, 'period', e.target.value)} /></div>
+                                        <div><label className="text-[10px] font-bold text-gray-400 uppercase">CTA Text</label><input className="w-full border rounded p-1.5 text-sm" value={item.btnText} onChange={e => updateSettingsItem('pricing', idx, 'btnText', e.target.value)} /></div>
+                                     </div>
+                                     <div className="mt-2">
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase">Features (Comma Separated)</label>
+                                        <input className="w-full border rounded p-1.5 text-sm" value={item.features.join(', ')} onChange={e => updateSettingsItem('pricing', idx, 'features', e.target.value.split(',').map((s: string) => s.trim()))} />
+                                     </div>
+                                     <div className="mt-2 flex gap-4">
+                                        <div className="flex items-center gap-2"><input type="checkbox" checked={item.highlight} onChange={e => updateSettingsItem('pricing', idx, 'highlight', e.target.checked)} /><span className="text-xs">Highlight Card</span></div>
+                                        <div className="flex items-center gap-2"><span className="text-xs">Tag:</span><input className="border rounded px-1 py-0.5 text-xs" value={item.tag || ''} onChange={e => updateSettingsItem('pricing', idx, 'tag', e.target.value)} /></div>
+                                     </div>
+                                  </div>
+                               ))}
+                            </div>
+                         </div>
+                      </div>
+                   )}
+
+                   {activeSettingsTab === 'FAQ' && (
+                      <div className="space-y-6">
+                         <div className="max-w-xl">
+                            <label className="text-xs font-bold text-gray-500 uppercase">Section Title</label>
+                            <input className="w-full border rounded-lg p-2 mt-1" value={settingsForm.faqs.title} onChange={e => handleSettingsChange('faqs', 'title', e.target.value)} />
+                         </div>
+                         <div className="border-t pt-4">
+                            <div className="flex justify-between items-center mb-4">
+                               <h3 className="font-bold text-gray-900">Questions & Answers</h3>
+                               <Button size="sm" onClick={() => addSettingsItem('faqs', { q: 'Question?', a: 'Answer.' })}>Add FAQ</Button>
+                            </div>
+                            <div className="space-y-4">
+                               {settingsForm.faqs.list.map((item, idx) => (
+                                  <div key={idx} className="p-4 border rounded-xl bg-gray-50 relative group">
+                                     <button onClick={() => removeSettingsItem('faqs', idx)} className="absolute top-2 right-2 text-red-400 opacity-0 group-hover:opacity-100"><XCircle size={16}/></button>
+                                     <div className="grid gap-2">
+                                        <div><label className="text-[10px] font-bold text-gray-400 uppercase">Question</label><input className="w-full border rounded p-1.5 text-sm font-bold" value={item.q} onChange={e => updateSettingsItem('faqs', idx, 'q', e.target.value)} /></div>
+                                        <div><label className="text-[10px] font-bold text-gray-400 uppercase">Answer</label><textarea className="w-full border rounded p-1.5 text-sm" rows={2} value={item.a} onChange={e => updateSettingsItem('faqs', idx, 'a', e.target.value)} /></div>
+                                     </div>
+                                  </div>
+                               ))}
+                            </div>
+                         </div>
+                      </div>
+                   )}
+
+                   {activeSettingsTab === 'CTA' && (
+                      <div className="space-y-4 max-w-2xl">
+                         <h3 className="font-bold text-gray-900 border-b pb-2">Final Call to Action</h3>
+                         <div><label className="text-xs font-bold text-gray-500 uppercase">Title</label><input className="w-full border rounded-lg p-2 mt-1" value={settingsForm.cta.title} onChange={e => handleSettingsChange('cta', 'title', e.target.value)} /></div>
+                         <div><label className="text-xs font-bold text-gray-500 uppercase">Subtitle</label><input className="w-full border rounded-lg p-2 mt-1" value={settingsForm.cta.subtitle} onChange={e => handleSettingsChange('cta', 'subtitle', e.target.value)} /></div>
+                         <div><label className="text-xs font-bold text-gray-500 uppercase">Button Text</label><input className="w-full border rounded-lg p-2 mt-1" value={settingsForm.cta.btnText} onChange={e => handleSettingsChange('cta', 'btnText', e.target.value)} /></div>
+                         <div><label className="text-xs font-bold text-gray-500 uppercase">Background Image URL</label><input className="w-full border rounded-lg p-2 mt-1" value={settingsForm.cta.image || ''} onChange={e => handleSettingsChange('cta', 'image', e.target.value)} /></div>
+                      </div>
+                   )}
+
                 </div>
              </div>
           </div>

@@ -109,16 +109,80 @@ export const DEFAULT_SETTINGS: LandingPageSettings = {
   },
   features: {
     title: 'Why Choose DITO Home WiFi Prepaid Modem?',
-    subtitle: 'Experience the best value prepaid home internet in the Philippines.'
+    subtitle: 'Experience the best value prepaid home internet in the Philippines.',
+    list: [
+      { icon: 'Zap', title: 'Fast & Reliable', desc: 'Enjoy high-speed internet with wide coverage across the Philippines.' },
+      { icon: 'CheckCircle2', title: 'Plug & Play', desc: 'Easy setup in just minutes — no technical skills needed.' },
+      { icon: 'CreditCard', title: 'Affordable Plans', desc: 'Only pay for what you need. No monthly bills or hidden charges.' },
+      { icon: 'Wifi', title: 'Unlimited Data', desc: 'Stay connected without worrying about data caps or limits.' },
+      { icon: 'Globe', title: 'Portable & Flexible', desc: 'Take your internet anywhere — home, office, or on your travels.' },
+      { icon: 'Unlock', title: 'No Lock-in', desc: 'Total freedom. Use the modem on your terms without contracts.' },
+    ]
+  },
+  howItWorks: {
+    title: 'Get Online in 3 Easy Steps',
+    list: [
+      { icon: 'ShoppingCart', step: '1', title: 'Buy Your Modem', desc: 'Order online and get it delivered.' },
+      { icon: 'Smartphone', step: '2', title: 'Activate SIM', desc: 'Plug it in and register easily.' },
+      { icon: 'Wifi', step: '3', title: 'Enjoy Internet', desc: 'Start streaming and browsing instantly.' }
+    ]
   },
   testimonials: {
     title: 'Trusted by Thousands of Happy Users',
-    subtitle: 'See what our community has to say.'
+    subtitle: 'See what our community has to say.',
+    list: [
+      { name: 'Maria C.', location: 'Manila', quote: "Finally, an internet provider that’s fast and hassle-free. I love the prepaid plan!" },
+      { name: 'John P.', location: 'Cebu', quote: "Easy to set up and works anywhere. Highly recommend DITO Home WiFi!" },
+      { name: 'Liza R.', location: 'Davao', quote: "Affordable, reliable, and portable. Perfect for my home office setup." }
+    ]
+  },
+  pricing: {
+    title: 'Affordable Prepaid Plans',
+    subtitle: 'Choose the perfect option that fits your budget and data needs.',
+    list: [
+      { 
+        name: 'Starter Kit', 
+        price: '1,990', 
+        highlight: false, 
+        tag: 'HARDWARE', 
+        btnText: 'Buy Starter Kit', 
+        features: ['Modem Unit', '5G/4G SIM Card', '50GB Bonus Data', 'Free Delivery'] 
+      },
+      { 
+        name: 'Unlimited 5G', 
+        price: '1,090', 
+        period: '/ 30 days',
+        highlight: true, 
+        tag: 'BEST VALUE', 
+        btnText: 'Get Unlimited', 
+        features: ['Unlimited 5G Data', 'No Speed Throttling', 'Valid for 30 Days', 'Works with DITO Modem'] 
+      },
+      { 
+        name: 'Data Top-ups', 
+        price: '50', 
+        description: 'Starts at', 
+        highlight: false, 
+        tag: 'ADD-ONS', 
+        btnText: 'View Options', 
+        features: ['Various Data Buckets', 'Valid for 3-30 Days', 'Easy Reload via App', 'Shareable Data'] 
+      }
+    ]
+  },
+  faqs: {
+    title: 'Got Questions? We’ve Got Answers!',
+    subtitle: '',
+    list: [
+      { q: 'How do I activate the modem?', a: 'Plug it in, insert the provided SIM card, and follow the simple instructions included in the box. Activation takes less than 5 minutes.' },
+      { q: 'Can I use it anywhere?', a: 'Yes! Our coverage extends nationwide. As long as there is DITO signal in your area, you can enjoy high-speed internet.' },
+      { q: 'Is there a monthly contract?', a: 'No, DITO Home WiFi is strictly prepaid. You only pay when you reload data. No lock-in periods or termination fees.' },
+      { q: 'How do I reload data?', a: 'You can easily reload via the DITO App, GCash, Maya, or at any authorized retail partner stores nationwide.' }
+    ]
   },
   cta: {
     title: 'Get Your DITO Home WiFi Prepaid Modem Today!',
     subtitle: 'Fast, reliable, and affordable internet is just a click away.',
-    btnText: 'Buy Now'
+    btnText: 'Buy Now',
+    image: ''
   },
   shipping: {
     enabled: true,
